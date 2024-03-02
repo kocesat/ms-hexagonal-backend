@@ -1,0 +1,47 @@
+server:
+  port: 8084
+  servlet:
+    context-path: /prens
+    encoding:
+      charset: UTF-8
+spring:
+  application:
+    name: prens
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    driver-class-name: org.postgresql.Driver
+    username: kocesat
+    password: Ankara06
+  messages:
+    fallback-to-system-locale: false
+    basename: messages, messages/info, messages/error
+
+# Mybatis configuration
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  # Normally, we need to write package name for each class written
+  #  in xml mapper config in MyBatis. With this set, we do not need to write
+  #  package names to all classes
+  # type-aliases-package: com.kocesat.prensbackend.domain**
+  configuration:
+    # class fields'names to sql column name
+    # firstName --> FIRST_NAME
+    map-underscore-to-camel-case: true
+    default-fetch-size: 10000
+
+#  quartz:
+#    job-store-type: jdbc
+#    scheduler-name: templatespringboot
+#    properties:
+#      org:
+#        quartz:
+#          jobStore:
+#            tablePrefix: QRTZ_
+#            driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+#            isClustered: true
+#            misfireThreshold: 5000
+#            useProperties: true
+#          scheduler:
+#            instanceId: AUTO
+#          threadPool:
+#            threadCount: 5

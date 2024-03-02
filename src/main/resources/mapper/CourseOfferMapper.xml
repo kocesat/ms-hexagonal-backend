@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.kocesat.prensbackend.infra.courseoffer.CourseOfferMapper">
+
+    <resultMap id="BaseResultMap" type="com.kocesat.prensbackend.domain.internal.courseoffer.CourseOffer">
+        <id property="id" column="id"/>
+        <result property="courseCode" column="course_code"/>
+        <result property="courseName" column="course_name" />
+        <result property="departmentCode" column="department_code" />
+        <result property="instructor" column="instructor" />
+        <result property="year" column="year" />
+        <result property="semester" column="semester" />
+        <result property="quota" column="quota" />
+        <result property="countRegistered" column="count_registered" />
+        <result property="price" column="price" />
+        <result property="insertTime" column="insert_time" javaType="java.time.LocalDateTime"/>
+        <result property="updateTime" column="update_time" javaType="java.time.LocalDateTime"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        select *
+        from prens.tcourse_offer
+        where id = #{courseOfferId}
+    </select>
+
+    <select id="selectByFilter"
+            parameterType="com.kocesat.prensbackend.domain.internal.courseoffer.dto.CourseOfferFilter"
+            resultMap="BaseResultMap"
+    >
+        select
+            id,
+            course_code,
+            c.name as course_name,
+            c.department_code as department_code,
+            instructor,
+            year,
+            semester,
+            quota,
+            count_registered,
+            price,
+            o.insert_time as insert_time,
+            o.update_time as update_time
+        from prens.tcourse_offer o
+        left join prens.tcourse c on c.code = o.course_code
+        <where> 1=1
+            <if test="year != null">
+                and year = #{year}
+            </if>
+            <if test="semester != null">
+                and semester = #{semester}
+            </if>
+            <if test="departmentCode != null">
+                and department_code = #{departmentCode}
+            </if>
+            <if test="courseCode != null">
+                and course_code = #{courseCode}
+            </if>
+        </where>
+        order by o.course_code desc
+        offset #{offset} rows
+        fetch first #{pageSize} rows only
+    </select>
+
+    <select id="countByFilter"
+            parameterType="com.kocesat.prensbackend.domain.internal.courseoffer.dto.CourseOfferFilter"
+            resultType="Integer"
+    >
+        select
+            count(1)
+        from prens.tcourse_offer o
+        left join prens.tcourse c on c.code = o.course_code
+        <where> 1=1
+            <if test="year != null">
+                and year = #{year}
+            </if>
+            <if test="semester != null">
+                and semester = #{semester}
+            </if>
+            <if test="departmentCode != null">
+                and c.department_code = #{departmentCode}
+            </if>
+            <if test="courseCode != null">
+                and course_code = #{courseCode}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert"
+            parameterType="com.kocesat.prensbackend.domain.internal.courseoffer.CourseOffer"
+            useGeneratedKeys="true"
+            keyProperty="id"
+            keyColumn="id"
+    >
+        insert into prens.tcourse_offer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            course_code,
+            year,
+            semester,
+            quota,
+            count_registered,
+            price,
+            insert_time,
+            update_time,
+            <if test="instructor != null">
+                instructor,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{courseCode},
+            #{year},
+            #{semester},
+            #{quota},
+            #{countRegistered},
+            #{price,jdbcType=DECIMAL},
+            current_timestamp,
+            current_timestamp,
+            <if test="instructor != null">
+                #{instructor,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update
+            id="updateCountRegistered"
+            parameterType="com.kocesat.prensbackend.domain.internal.courseoffer.CourseOffer"
+    >
+        update prens.tcourse_offer
+        set count_registered = #{countRegistered},
+            update_time = current_timestamp
+        where id = #{id}
+          and update_time = #{updateTime}
+    </update>
+</mapper>
