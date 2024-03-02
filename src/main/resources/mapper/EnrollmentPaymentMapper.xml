@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.kocesat.prensbackend.infra.payment.EnrollmentPaymentMapper">
+    <resultMap id="BaseResultMap" type="com.kocesat.prensbackend.infra.payment.model.EnrollmentPaymentEntity">
+        <id property="id" column="id"/>
+        <result property="paymentId" column="payment_id"/>
+        <result property="enrollmentId" column="enrollment_id"/>
+        <result property="insertTime" column="insert_time" javaType="java.time.LocalDateTime"/>
+        <result property="updateTime" column="update_time" javaType="java.time.LocalDateTime"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="com.kocesat.prensbackend.infra.payment.model.EnrollmentPaymentEntity"
+            useGeneratedKeys="true"
+            keyProperty="id"
+            keyColumn="id"
+    >
+        insert into prens.tenrollment_payment
+            <trim prefix="(" suffix = ")" suffixOverrides=",">
+                payment_id,
+                enrollment_id,
+                insert_time,
+                update_time
+            </trim>
+        values
+            <trim prefix="(" suffix = ")" suffixOverrides=",">
+                #{paymentId},
+                #{enrollmentId},
+                current_timestamp,
+                current_timestamp
+            </trim>
+    </insert>
+</mapper>

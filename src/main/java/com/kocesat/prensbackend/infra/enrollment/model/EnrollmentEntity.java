@@ -4,6 +4,7 @@ import com.kocesat.prensbackend.domain.internal.enrollment.Enrollment;
 import com.kocesat.prensbackend.domain.internal.enrollment.EnrollmentStatus;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -21,6 +22,7 @@ public class EnrollmentEntity {
   private Integer year;
   private Integer semester;
   private Integer status;
+  private BigDecimal paymentAmount;
   private LocalDateTime insertTime;
   private LocalDateTime updateTime;
 
@@ -34,6 +36,7 @@ public class EnrollmentEntity {
         .insertTime(insertTime)
         .updateTime(updateTime)
         .year(year)
+        .paymentAmount(paymentAmount)
         .semester(semester)
         .status(EnrollmentStatus.parse(status))
         .build();

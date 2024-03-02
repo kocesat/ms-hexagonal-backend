@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Slf4j
@@ -31,6 +32,16 @@ public class EnrollmentDbAdapter implements EnrollmentDbPort {
         .toList();
   }
 
+  @Override
+  public Optional<Enrollment> findById(Integer id) {
+    List<EnrollmentEntity> enrollments = enrollmentMapper.selectById(id);
+    if (enrollments.isEmpty()) {
+      return Optional.empty();
+    }
+
+    return Optional.of(enrollments.get(0).toDomainModel());
+  }
+
 
   @Override
   public Enrollment saveEnrollment(EnrollmentCreateDto dto) {
@@ -48,5 +59,10 @@ public class EnrollmentDbAdapter implements EnrollmentDbPort {
     }
 
     return entity.toDomainModel();
+  }
+
+  @Override
+  public int updateStatus(Integer id, EnrollmentStatus newStatus) {
+    return enrollmentMapper.updateStatus(id, newStatus.getCode());
   }
 }

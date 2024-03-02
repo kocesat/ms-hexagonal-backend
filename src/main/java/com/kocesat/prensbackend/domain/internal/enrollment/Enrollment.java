@@ -3,6 +3,7 @@ package com.kocesat.prensbackend.domain.internal.enrollment;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -17,6 +18,7 @@ public class Enrollment {
   private Integer year;
   private Integer semester;
   private EnrollmentStatus status;
+  private BigDecimal paymentAmount;
   private LocalDateTime insertTime;
   private LocalDateTime updateTime;
 }

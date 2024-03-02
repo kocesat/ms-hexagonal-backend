@@ -26,4 +26,8 @@ public enum EnrollmentStatus {
   public int getCode() {
     return code;
   }
+
+  public boolean isPayable() {
+    return this == RESERVED || this == PAYMENT_FAILED;
+  }
 }

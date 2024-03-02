@@ -10,6 +10,7 @@
         <result column="year" property="year"/>
         <result column="semester" property="semester"/>
         <result column="status" property="status"/>
+        <result column="payment_amount" property="paymentAmount"/>
         <result column="insert_time" property="insertTime" javaType="java.time.LocalDateTime"/>
         <result column="update_time" property="updateTime" javaType="java.time.LocalDateTime"/>
     </resultMap>
@@ -21,7 +22,8 @@
         select
             enrollment.*,
             course.code as course_code,
-            course.name as course_name
+            course.name as course_name,
+            course_offer.price as payment_amount
         from prens.tenrollment enrollment
         left join prens.tcourse_offer course_offer on course_offer.id = enrollment.course_offer_id
         left join prens.tcourse course on course.code = course_offer.course_code
@@ -29,6 +31,23 @@
             enrollment.student_id = #{studentId}
             and enrollment.year = #{year}
             and enrollment.semester = #{semester}
+        </where>
+    </select>
+
+    <select id="selectById"
+            resultMap="BaseResultMap"
+            parameterType="map"
+    >
+        select
+            enrollment.*,
+            course.code as course_code,
+            course.name as course_name,
+            course_offer.price as payment_amount
+        from prens.tenrollment enrollment
+        left join prens.tcourse_offer course_offer on course_offer.id = enrollment.course_offer_id
+        left join prens.tcourse course on course.code = course_offer.course_code
+        <where>
+            enrollment.id = #{id}
         </where>
     </select>
 
@@ -59,4 +78,10 @@
                 current_timestamp
             </trim>
     </insert>
+
+    <update id="updateStatus">
+        update prens.tenrollment
+        set status = #{newStatus}, update_time = CURRENT_TIMESTAMP
+        where id = #{id}
+    </update>
 </mapper>

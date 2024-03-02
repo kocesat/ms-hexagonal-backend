@@ -39,7 +39,6 @@ public class CourseOfferService implements CourseOfferUseCasePort {
   }
 
   @Override
-  @Transactional(readOnly = true)
   public CourseOffer getById(Integer courseOfferId) {
     return courseOfferDbPort.findById(courseOfferId)
         .orElseThrow(() -> new IllegalArgumentException("Course offer not found!"));
@@ -85,6 +84,5 @@ public class CourseOfferService implements CourseOfferUseCasePort {
     if (updateCount < 1) {
       throw new IllegalStateException("Update Course offer is not successfull");
     }
-    return;
   }
 }

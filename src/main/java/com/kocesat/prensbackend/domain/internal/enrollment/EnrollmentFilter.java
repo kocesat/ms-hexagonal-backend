@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 public class EnrollmentFilter {
 
+  private Integer id;
   private Integer studentId;
   private Integer year;
   private Integer semester;

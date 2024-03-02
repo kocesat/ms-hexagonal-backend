@@ -13,11 +13,11 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class EnrollmentService implements EnrollmentUseCasePort {
 
   private final EnrollmentDbPort enrollmentDbPort;
@@ -66,5 +66,17 @@ public class EnrollmentService implements EnrollmentUseCasePort {
         .build());
   }
 
+  @Override
+  public Optional<Enrollment> getEnrollmentById(Integer enrollmentId) {
+    return enrollmentDbPort.findById(enrollmentId);
+  }
 
+  @Override
+  public void updateStatus(Integer id, EnrollmentStatus newStatus) {
+    int updatedCount = enrollmentDbPort.updateStatus(id, newStatus);
+
+    if (updatedCount < 1) {
+      throw new IllegalStateException("Update enrollment failed!");
+    }
+  }
 }
