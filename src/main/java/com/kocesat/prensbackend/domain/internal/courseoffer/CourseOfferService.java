@@ -33,8 +33,8 @@ public class CourseOfferService implements CourseOfferUseCasePort {
 
     List<CourseOffer> courseOffers = courseOfferDbPort.findByFilter(filter);
     return CourseOfferListOutput.builder()
-        .totalCount(courseOfferDbPort.countByFilter(filter))
-        .courseOffers(courseOffers)
+        .count(courseOfferDbPort.countByFilter(filter))
+        .results(courseOffers)
         .build();
   }
 

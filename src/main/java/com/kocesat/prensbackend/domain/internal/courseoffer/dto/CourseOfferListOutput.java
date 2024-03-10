@@ -14,6 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 public class CourseOfferListOutput {
 
-  private Integer totalCount;
-  private List<CourseOffer> courseOffers;
+  private Integer count;
+  private List<CourseOffer> results;
 }
