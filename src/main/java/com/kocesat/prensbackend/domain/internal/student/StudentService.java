@@ -3,6 +3,7 @@ package com.kocesat.prensbackend.domain.internal.student;
 import com.kocesat.prensbackend.domain.internal.student.model.Student;
 import com.kocesat.prensbackend.domain.ports.StudentDbPort;
 import com.kocesat.prensbackend.domain.ports.StudentUseCasePort;
+import com.kocesat.prensbackend.infra.base.ListResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,12 @@ class StudentService implements StudentUseCasePort {
   private final StudentDbPort studentDbPort;
 
   @Override
-  public List<Student> getStudents() {
-    return studentDbPort.findAll();
+  public ListResponse<Student> getStudents() {
+    List<Student> students = studentDbPort.findAll();
+    return ListResponse.<Student>builder()
+        .count(students.size())
+        .results(students)
+        .build();
   }
 
   @Override

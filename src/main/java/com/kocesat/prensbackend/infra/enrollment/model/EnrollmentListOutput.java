@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @Builder
 public class EnrollmentListOutput {
-
+  private Integer count;
   @Builder.Default
-  List<EnrollmentDto> enrollmentList = new ArrayList<>();
+  List<EnrollmentDto> results = new ArrayList<>();
 }

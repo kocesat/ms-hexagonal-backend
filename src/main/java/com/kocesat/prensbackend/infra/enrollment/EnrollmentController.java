@@ -30,7 +30,8 @@ public class EnrollmentController {
         .map(EnrollmentDto::from)
         .toList();
     return EnrollmentListOutput.builder()
-        .enrollmentList(enrollmentDtos)
+        .count(enrollmentDtos.size())
+        .results(enrollmentDtos)
         .build();
   }
 
