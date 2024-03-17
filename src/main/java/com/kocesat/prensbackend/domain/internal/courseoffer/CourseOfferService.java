@@ -1,5 +1,8 @@
 package com.kocesat.prensbackend.domain.internal.courseoffer;
 
+import com.kocesat.prensbackend.domain.internal.common.exception.BusinessException;
+import com.kocesat.prensbackend.domain.internal.common.exception.NotFoundException;
+import com.kocesat.prensbackend.domain.internal.common.exception.UnexpectedException;
 import com.kocesat.prensbackend.domain.internal.courseoffer.dto.CourseOfferCreateInput;
 import com.kocesat.prensbackend.domain.internal.courseoffer.dto.CourseOfferFilter;
 import com.kocesat.prensbackend.domain.internal.courseoffer.dto.CourseOfferListOutput;
@@ -28,7 +31,7 @@ public class CourseOfferService implements CourseOfferUseCasePort {
     if (filter == null
         || filter.getYear() == null
         || filter.getSemester() == null) {
-      throw new IllegalArgumentException("Invalid CourseOfferFilter");
+      throw new BusinessException(CourseOfferError.INVALID_QUERY_FILTER);
     }
 
     List<CourseOffer> courseOffers = courseOfferDbPort.findByFilter(filter);
@@ -41,7 +44,7 @@ public class CourseOfferService implements CourseOfferUseCasePort {
   @Override
   public CourseOffer getById(Integer courseOfferId) {
     return courseOfferDbPort.findById(courseOfferId)
-        .orElseThrow(() -> new IllegalArgumentException("Course offer not found!"));
+        .orElseThrow(() -> new NotFoundException(CourseOfferError.NOT_FOUND));
   }
 
   @Override
@@ -56,7 +59,7 @@ public class CourseOfferService implements CourseOfferUseCasePort {
         .build());
 
     if (courseOfferCount > 0) {
-      throw new IllegalStateException("Course already registered in the semester");
+      throw new BusinessException(CourseOfferError.ALREADY_EXISTS);
     }
 
     final CourseOffer courseOffer = CourseOffer.builder()
@@ -73,7 +76,7 @@ public class CourseOfferService implements CourseOfferUseCasePort {
 
     int insertedCount =  courseOfferDbPort.create(courseOffer);
     if (insertedCount != 1) {
-      throw new IllegalStateException("Could not create course offer");
+      throw new UnexpectedException("Could not create course offer");
     }
   }
 
@@ -82,7 +85,7 @@ public class CourseOfferService implements CourseOfferUseCasePort {
     courseOffer.setCountRegistered(courseOffer.getCountRegistered() + 1);
     final int updateCount = courseOfferDbPort.updateCountRegistered(courseOffer);
     if (updateCount < 1) {
-      throw new IllegalStateException("Update Course offer is not successfull");
+      throw new UnexpectedException("Update Course offer is not successfull");
     }
   }
 }

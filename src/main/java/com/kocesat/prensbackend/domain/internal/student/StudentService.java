@@ -1,5 +1,6 @@
 package com.kocesat.prensbackend.domain.internal.student;
 
+import com.kocesat.prensbackend.domain.internal.common.exception.NotFoundException;
 import com.kocesat.prensbackend.domain.internal.student.model.Student;
 import com.kocesat.prensbackend.domain.ports.StudentDbPort;
 import com.kocesat.prensbackend.domain.ports.StudentUseCasePort;
@@ -29,6 +30,6 @@ class StudentService implements StudentUseCasePort {
   @Override
   public Student getStudentById(Integer studentId) {
     return studentDbPort.findById(studentId)
-        .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+        .orElseThrow(() -> new NotFoundException(StudentError.NOT_FOUND));
   }
 }
