@@ -33,7 +33,8 @@ class PaymentService implements PaymentUseCasePort {
 
   @Override
   @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = Exception.class)
-  public List<PaymentResult> makePayment(Integer studentId, List<Integer> enrollmentIdList, BigDecimal amount) {
+  public List<PaymentResult> makePayment(
+      Integer studentId, List<Integer> enrollmentIdList, BigDecimal amount) {
     // check if student exists
     studentUseCasePort.getStudentById(studentId);
 

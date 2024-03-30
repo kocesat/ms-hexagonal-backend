@@ -1,5 +1,6 @@
 package com.kocesat.prensbackend.domain.internal.course;
 
+import com.kocesat.prensbackend.domain.internal.common.exception.NotFoundException;
 import com.kocesat.prensbackend.domain.ports.CourseDbPort;
 import com.kocesat.prensbackend.domain.ports.CourseUseCasePort;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,6 @@ class CourseService implements CourseUseCasePort {
   @Override
   public Course getCourseByCode(String code) {
     return courseDbPort.findByCode(code)
-        .orElseThrow(() -> new IllegalStateException("course not found"));
+        .orElseThrow(() -> new NotFoundException(CourseError.NOT_FOUND));
   }
 }

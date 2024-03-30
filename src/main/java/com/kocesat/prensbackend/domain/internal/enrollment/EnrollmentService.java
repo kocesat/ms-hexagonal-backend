@@ -1,7 +1,11 @@
 package com.kocesat.prensbackend.domain.internal.enrollment;
 
 
+import com.kocesat.prensbackend.domain.internal.common.exception.BusinessException;
+import com.kocesat.prensbackend.domain.internal.common.exception.NotFoundException;
+import com.kocesat.prensbackend.domain.internal.common.exception.UnexpectedException;
 import com.kocesat.prensbackend.domain.internal.courseoffer.CourseOffer;
+import com.kocesat.prensbackend.domain.internal.courseoffer.CourseOfferError;
 import com.kocesat.prensbackend.domain.ports.CourseOfferUseCasePort;
 import com.kocesat.prensbackend.domain.ports.EnrollmentDbPort;
 import com.kocesat.prensbackend.domain.ports.EnrollmentUseCasePort;
@@ -32,11 +36,11 @@ public class EnrollmentService implements EnrollmentUseCasePort {
     final CourseOffer courseOffer = courseOfferUseCasePort.getById(dto.getCourseOfferId());
 
     if (!courseOffer.inSameSemester(dto.getYear(), dto.getSemester())) {
-      throw new IllegalStateException("Course offer not found");
+      throw new NotFoundException(CourseOfferError.NOT_FOUND);
     }
 
     if (!courseOffer.hasCapacity()) {
-      throw new IllegalStateException("Course capacity is full!");
+      throw new BusinessException(EnrollmentError.FULL_CAPACITY);
     }
 
     List<Enrollment> enrollmentList = enrollmentDbPort.findByFilter(EnrollmentFilter.builder()
@@ -49,7 +53,7 @@ public class EnrollmentService implements EnrollmentUseCasePort {
         .anyMatch(enrollment -> enrollment.getCourseOfferId().equals(dto.getCourseOfferId()));
 
     if (alreadyTaken) {
-      throw new IllegalStateException("Course already taken for the specified semester");
+      throw new BusinessException(EnrollmentError.ALREADY_TAKEN);
     }
 
     final Enrollment enrollment = enrollmentDbPort.saveEnrollment(dto);
@@ -76,7 +80,7 @@ public class EnrollmentService implements EnrollmentUseCasePort {
     int updatedCount = enrollmentDbPort.updateStatus(id, newStatus);
 
     if (updatedCount < 1) {
-      throw new IllegalStateException("Update enrollment failed!");
+      throw new UnexpectedException("Update enrollment failed!");
     }
   }
 }

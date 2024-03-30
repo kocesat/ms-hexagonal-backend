@@ -1,6 +1,5 @@
 package com.kocesat.prensbackend.infra.payment.model;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -18,6 +17,6 @@ public class PaymentMakeInput {
   private List<Integer> enrollmentIdList;
   @NotNull
   private Integer studentId;
-  @NotNull
+  @NotNull(message = "amount cannot be null")
   private BigDecimal amount;
 }
