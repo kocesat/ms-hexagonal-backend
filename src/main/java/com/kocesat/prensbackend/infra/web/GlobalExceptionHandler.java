@@ -7,16 +7,19 @@ import com.kocesat.prensbackend.infra.base.MessageAccessor;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler {
 
   @ExceptionHandler(BaseException.class)
   public ResponseEntity<ApiError> handleBaseException(BaseException e) {
@@ -43,8 +46,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return ResponseEntity.status(httpStatusCode).body(apiError);
   }
 
-  @ExceptionHandler(Throwable.class)
-  public ResponseEntity<ApiError> handleUnhandledException(Throwable t) {
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<ApiError> handleMethodArgsError(MethodArgumentNotValidException e) {
+    final var apiError = ApiError.builder()
+        .code(ErrorConstant.DEFAULT)
+        .message("Api field errors occured!")
+        .fieldErrors(new HashMap<>())
+        .build();
+
+    List<FieldError> fieldErrors = e.getFieldErrors();
+
+    for (FieldError error : fieldErrors) {
+      apiError.getFieldErrors().put(error.getField(), error.getDefaultMessage());
+    }
+
+    return ResponseEntity.badRequest().body(apiError);
+  }
+
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<ApiError> handleUnhandledException(Exception t) {
+
     final var apiError = ApiError.builder()
         .code(ErrorConstant.DEFAULT)
         .message(MessageAccessor.getMessage(
